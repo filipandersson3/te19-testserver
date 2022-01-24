@@ -39,6 +39,19 @@ ALTER table
 INSERT
 
 SELECT
+
+insert into tasks (task) values ('handla');
+
+alter table tasks drop completed_at;
+
+create table NAMN (id) ...
+
+alter table NAMN ADD MODIFY DROP NAMN
+
+delete from tasks WHERE id = 5;
+
+update tasks set completed=1, updated_at=now() where id=1;
+
 # historik
 
 history | grep mysql
