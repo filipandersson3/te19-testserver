@@ -23,7 +23,45 @@ router.get('/', async function(req, res, next) {
                     data: rows
                 }
             });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                tasks: {
+                    error: 'Error getting tasks'
+                }
+            })
         });
 });
+
+router.get('/:id', async (req, res, next) => {
+    const id = req.params.id;
+    if (isNaN(req.params.id)) {
+        res.status(400).json({
+            task: {
+                error: 'Bad request'
+            }
+        })
+    } else {
+        await pool.promise()
+            .query('SELECT * FROM tasks WHERE id = ' + id)
+            .then(([rows, fields]) => {
+                console.log(rows);
+                res.json({
+                    tasks: {
+                        data: rows
+                    }
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    tasks: {
+                        error: 'Error getting tasks'
+                    }
+                })
+            });
+    }
+})
 
 module.exports = router;
