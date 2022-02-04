@@ -15,11 +15,11 @@ const pool = require('../database');
 /* GET home page. */
 router.get('/', async function(req, res, next) {
     await pool.promise()
-        .query('SELECT * FROM tasks')
+        .query('SELECT * FROM videos')
         .then(([rows, fields]) => {
             console.log(rows);
             res.json({
-                tasks: {
+                videos: {
                     data: rows
                 }
             });
@@ -27,8 +27,8 @@ router.get('/', async function(req, res, next) {
         .catch(err => {
             console.log(err);
             res.status(500).json({
-                tasks: {
-                    error: 'Error getting tasks'
+                videos: {
+                    error: 'Error getting bideos'
                 }
             })
         });
@@ -39,17 +39,17 @@ router.get('/delete/:id', async (req, res, next) => {
     const id = req.params.id;
     if (isNaN(req.params.id)) {
         res.status(400).json({
-            task: {
+            videos: {
                 error: 'Bad request'
             }
         })
     } else {
         await pool.promise()
-            .query('DELETE FROM tasks WHERE id = ' + id)
+            .query('DELETE FROM videos WHERE id = ' + id)
             .then(([rows, fields]) => {
                 console.log(rows);
                 res.json({
-                    tasks: {
+                    videos: {
                         data: rows
                     }
                 });
@@ -57,8 +57,8 @@ router.get('/delete/:id', async (req, res, next) => {
             .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                    tasks: {
-                        error: 'Error getting tasks'
+                    videos: {
+                        error: 'Error getting videos'
                     }
                 })
             });
@@ -69,17 +69,17 @@ router.get('/:id', async (req, res, next) => {
     const id = req.params.id;
     if (isNaN(req.params.id)) {
         res.status(400).json({
-            task: {
+            videos: {
                 error: 'Bad request'
             }
         })
     } else {
         await pool.promise()
-            .query('SELECT * FROM tasks WHERE id = ' + id)
+            .query('SELECT * FROM videos WHERE id = ' + id)
             .then(([rows, fields]) => {
                 console.log(rows);
                 res.json({
-                    tasks: {
+                    videos: {
                         data: rows
                     }
                 });
@@ -87,7 +87,7 @@ router.get('/:id', async (req, res, next) => {
             .catch(err => {
                 console.log(err);
                 res.status(500).json({
-                    tasks: {
+                    videos: {
                         error: 'Error getting tasks'
                     }
                 })
