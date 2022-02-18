@@ -6,6 +6,13 @@ a {
   color: #00B7FF; }
 
 h1 {
-  color: #000000; }
+  color: #383838; }
+
+.container {
+  padding: 1rem;
+  border-style: solid;
+  border-radius: 0.5rem;
+  border-width: 1px;
+  border-color: #383838; }
 
 /*# sourceMappingURL=style.css.map */

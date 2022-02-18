@@ -1,0 +1,12 @@
+{% extends  layout %}
+{% block  content %}
+  <h1>{{message}}</h1>
+  <div class="container">
+    {% for item in items %}
+    <li><a href="{{item.url}}">{{item.title}}</a></li>
+    <form action="/videos/delete/{{item.id}}" method="GET">
+      <input type="submit" value="DELETE">
+    </form>
+    {% endfor %}
+  </div>
+{% endblock %}

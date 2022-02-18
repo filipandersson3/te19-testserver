@@ -18,11 +18,13 @@ router.get('/', async function(req, res, next) {
         .query('SELECT * FROM videos')
         .then(([rows, fields]) => {
             console.log(rows);
-            res.json({
-                videos: {
-                    data: rows
-                }
-            });
+            let data = {
+                message: "He llo",
+                layout: 'layout.njk',
+                title: 'Nunjucks example',
+                items: rows
+              };
+              res.render('videos.njk', data);
         })
         .catch(err => {
             console.log(err);
@@ -35,7 +37,7 @@ router.get('/', async function(req, res, next) {
 });
 
 /* DELETE /:id - delete a task by id */
-router.get('/delete/:id', async (req, res, next) => {
+router.get('/:id/delete/', async (req, res, next) => {
     const id = req.params.id;
     if (isNaN(req.params.id)) {
         res.status(400).json({
@@ -45,7 +47,7 @@ router.get('/delete/:id', async (req, res, next) => {
         })
     } else {
         await pool.promise()
-            .query('DELETE FROM videos WHERE id = ' + id)
+            .query('DELETE FROM videos WHERE id = ?', [id])
             .then(([rows, fields]) => {
                 console.log(rows);
                 res.json({
@@ -75,7 +77,7 @@ router.get('/:id', async (req, res, next) => {
         })
     } else {
         await pool.promise()
-            .query('SELECT * FROM videos WHERE id = ' + id)
+            .query('SELECT * FROM videos WHERE id = ?', [id])
             .then(([rows, fields]) => {
                 console.log(rows);
                 res.json({
@@ -88,11 +90,42 @@ router.get('/:id', async (req, res, next) => {
                 console.log(err);
                 res.status(500).json({
                     videos: {
-                        error: 'Error getting tasks'
+                        error: 'Error getting videos'
                     }
                 })
             });
     }
 })
+
+router.post('/', async (req, res, next) => {
+    const id = req.params.id;
+    if (isNaN(req.params.id)) {
+        res.status(400).json({
+            videos: {
+                error: 'Bad request'
+            }
+        })
+    } else {
+        await pool.promise()
+            .query('SELECT * FROM videos WHERE id = ?', [id])
+            .then(([rows, fields]) => {
+                console.log(rows);
+                res.json({
+                    videos: {
+                        data: rows
+                    }
+                });
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    videos: {
+                        error: 'Error getting videos'
+                    }
+                })
+            });
+    }
+})
+
 
 module.exports = router;
