@@ -98,32 +98,35 @@ router.get('/:id', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
-    const id = req.params.id;
-    if (isNaN(req.params.id)) {
-        res.status(400).json({
+    const url = req.body.url;
+    const good = req.body.good;
+    const title = req.body.title;
+    await pool.promise()
+    .query('INSERT INTO videos (url,good,title) VALUES (?,?,?)', [url,good,title])
+    .then((response) => {
+        console.log(response);
+        res.json({
             videos: {
-                error: 'Bad request'
+                data: response
+            }
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            videos: {
+                error: 'Error posting videos'
             }
         })
+    });
+})
+
+router.post('/fileupload', async (req, res, next) => {
+    const files = req.files;
+    if (files == null){
+
     } else {
-        await pool.promise()
-            .query('SELECT * FROM videos WHERE id = ?', [id])
-            .then(([rows, fields]) => {
-                console.log(rows);
-                res.json({
-                    videos: {
-                        data: rows
-                    }
-                });
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                    videos: {
-                        error: 'Error getting videos'
-                    }
-                })
-            });
+        console.log(files.file);
     }
 })
 
