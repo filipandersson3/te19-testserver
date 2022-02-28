@@ -48,13 +48,13 @@ router.get('/:id/delete/', async (req, res, next) => {
     } else {
         await pool.promise()
             .query('DELETE FROM videos WHERE id = ?', [id])
-            .then(([rows, fields]) => {
-                console.log(rows);
-                res.json({
-                    videos: {
-                        data: rows
-                    }
-                });
+            .then((response) => {
+                console.log(response);
+                if (response[0].affectedRows === 1) {
+                    res.redirect('/videos');
+                } else {
+                    res.status(400).redirect('/videos');
+                }
             })
             .catch(err => {
                 console.log(err);
