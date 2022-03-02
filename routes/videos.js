@@ -14,11 +14,18 @@ const pool = require('../database');
 */
 /* GET home page. */
 router.get('/', async function(req, res, next) {
+    const flash = req.session.flash;
+    const flashColor = req.session.flashColor;
+    console.log(req.session.flash);
+    req.session.flash = null;
+    req.session.flashColor = null;
     await pool.promise()
         .query('SELECT * FROM videos')
         .then(([rows, fields]) => {
             console.log(rows);
             let data = {
+                flash: flash,
+                flashColor: flashColor,
                 message: "He llo",
                 layout: 'layout.njk',
                 title: 'Nunjucks example',
@@ -51,8 +58,12 @@ router.get('/:id/delete/', async (req, res, next) => {
             .then((response) => {
                 console.log(response);
                 if (response[0].affectedRows === 1) {
+                    req.session.flash = "Video deleted";
+                    req.session.flashColor = "primary";
                     res.redirect('/videos');
                 } else {
+                    req.session.flash = "Video not found";
+                    req.session.flashColor = "danger";
                     res.status(400).redirect('/videos');
                 }
             })
@@ -105,11 +116,15 @@ router.post('/', async (req, res, next) => {
     .query('INSERT INTO videos (url,good,title) VALUES (?,?,?)', [url,good,title])
     .then((response) => {
         console.log(response);
-        res.json({
-            videos: {
-                data: response
-            }
-        });
+        if (response[0].affectedRows === 1) {
+            req.session.flash = "Video " + title + " successfully posted";
+            req.session.flashColor = "success";
+            res.redirect('/videos');
+        } else {
+            req.session.flash = "Video could not be posted";
+            req.session.flashColor = "danger";
+            res.status(400).redirect('/videos');
+        }
     })
     .catch(err => {
         console.log(err);
