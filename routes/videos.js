@@ -145,5 +145,35 @@ router.post('/fileupload', async (req, res, next) => {
     }
 })
 
+router.post('/:id/complete', async (req, res, next) => {
+    const id = req.params.id;
+    if (isNaN(req.params.id)) {
+        res.status(400).json({
+            videos: {
+                error: 'Bad request'
+            }
+        })
+    } else {
+        await pool.promise()
+        .query('update videos set good = !good where id=?;', [id])
+        .then((response) => {
+            res.json({
+                video: {
+                    data: response
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                videos: {
+                    error: 'Error posting videos'
+                }
+            })
+        });
+    }
+    
+})
+
 
 module.exports = router;
